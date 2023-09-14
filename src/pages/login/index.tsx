@@ -2,13 +2,14 @@
 
 import Button from '@/components/forms/button';
 import Input from '@/components/forms/input';
+import { login } from '@/helpers/auth/operations';
 import { LoginFormType } from '@/types/auth/operations';
+import { LoginPageType } from '@/types/pages/types';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useState } from 'react'
 
-
-const LoginPage = ({ logIn }: any) => {
+const LoginPage = ({ onLogin = login }: LoginPageType) => {
 
     const router = useRouter();
     const [submitting, setSubmitting] = useState(false);
@@ -24,10 +25,11 @@ const LoginPage = ({ logIn }: any) => {
 
     const onSubmit = async (e: any) => {
         e.preventDefault();
+        console.log("loginForm", loginForm);
 
         try {
             setSubmitting(true);
-            const response = await logIn(loginForm);
+            const response: any = await onLogin(loginForm);
 
             if (response?.ok) {
                 setLoginMessage("Login succeed")

@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import SignupPage from "."
+import SignupPage from "../../src/pages/register"
 
 describe('Signup Page', () => {
     let usernameElement: HTMLElement;
@@ -26,12 +26,12 @@ describe('Signup Page', () => {
     it("should populate the required field error", async () => {
         setup();
 
-        await waitFor(() => {
-            fireEvent.click(registerButton);
-        })
+        fireEvent.click(registerButton);
 
-        const messageElement = screen.queryByText(/Please fill all the fields/i);
-        expect(messageElement).toBeInTheDocument();
+        await waitFor(() => {
+            const messageElement = screen.queryByText(/Please fill all the fields/i);
+            expect(messageElement).toBeInTheDocument();
+        });
     });
 
     it("should display the password mismatch error", async () => {
@@ -40,13 +40,12 @@ describe('Signup Page', () => {
         fireEvent.change(usernameElement, { target: { value: "seeni" } });
         fireEvent.change(passwordElement, { target: { value: "asdf" } });
         fireEvent.change(confirmPasswordElement, { target: { value: "fdas" } });
+        fireEvent.click(registerButton);
 
         await waitFor(() => {
-            fireEvent.click(registerButton);
+            const messageElement = screen.queryByText(/Passwords does not matched!/i)
+            expect(messageElement).toBeInTheDocument();
         });
-
-        const messageElement = screen.queryByText(/Passwords does not matched!/i)
-        expect(messageElement).toBeInTheDocument();
     });
 
     it("should display the username already exists error", async () => {
@@ -62,13 +61,12 @@ describe('Signup Page', () => {
         fireEvent.change(usernameElement, { target: { value: "seeni" } });
         fireEvent.change(passwordElement, { target: { value: "asdf" } });
         fireEvent.change(confirmPasswordElement, { target: { value: "asdf" } });
+        fireEvent.click(registerButton);
 
         await waitFor(() => {
-            fireEvent.click(registerButton);
+            const messageElement = screen.getByText(/Username is already taken/i);
+            expect(messageElement).toBeInTheDocument();
         });
-
-        const messageElement = screen.getByText(/Username is already taken/i);
-        expect(messageElement).toBeInTheDocument();
     });
 
     it("should display the success message", async () => {
@@ -83,12 +81,11 @@ describe('Signup Page', () => {
         fireEvent.change(usernameElement, { target: { value: "seeni" } });
         fireEvent.change(passwordElement, { target: { value: "asdf" } });
         fireEvent.change(confirmPasswordElement, { target: { value: "asdf" } });
+        fireEvent.click(registerButton);
 
         await waitFor(() => {
-            fireEvent.click(registerButton);
+            const messageElement = screen.getByText(/Register succeed/i);
+            expect(messageElement).toBeInTheDocument();
         });
-
-        const messageElement = screen.getByText(/Register succeed/i);
-        expect(messageElement).toBeInTheDocument();
-    })
-})
+    });
+});

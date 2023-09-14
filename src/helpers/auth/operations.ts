@@ -1,7 +1,7 @@
 import { LoginFormType, RegisterFormType } from "@/types/auth/operations";
 import { signIn } from "next-auth/react";
 
-export const logIn = async (loginForm: LoginFormType) => {
+export const login = async (loginForm: LoginFormType) => {
     const response = await signIn("credentials", {
         ...loginForm,
         redirect: false
@@ -23,5 +23,5 @@ export const register = async (registerForm: RegisterFormType) => {
         return Promise.resolve(data);
     }
 
-    return Promise.resolve(await logIn(registerForm));
+    return Promise.resolve(await login(registerForm));
 }

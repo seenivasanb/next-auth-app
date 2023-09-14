@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import LoginPage from ".";
+import LoginPage from "../../src/pages/login";
 
 describe("Login Page", () => {
 
@@ -8,7 +8,7 @@ describe("Login Page", () => {
     let loginButton: HTMLElement;
 
     const setup = (mockLogIn: any) => {
-        render(<LoginPage logIn={mockLogIn} />);
+        render(<LoginPage onLogin={mockLogIn} />);
         usernameElement = screen.getByLabelText("username");
         passwordElement = screen.getByLabelText("password");
         loginButton = screen.getByRole("button", { name: "Login" });
@@ -34,15 +34,15 @@ describe("Login Page", () => {
             }
             return Promise.resolve(response);
         });
-
         setup(mockLogIn);
 
+        fireEvent.click(loginButton);
+
         await waitFor(() => {
-            fireEvent.click(loginButton);
+            const messageElement = screen.queryByText(errorMessage);
+            expect(messageElement).toBeInTheDocument();
         });
 
-        const messageElement = screen.queryByText(errorMessage);
-        expect(messageElement).toBeInTheDocument();
     });
 
     it("should redirect to the dashboard page", async () => {
@@ -52,17 +52,15 @@ describe("Login Page", () => {
             }
             return Promise.resolve(response);
         });
-
         setup(mockLogIn);
 
+        fireEvent.change(usernameElement, { target: { value: "seeni" } });
+        fireEvent.change(passwordElement, { target: { value: "asdf" } });
+        fireEvent.click(loginButton);
+
         await waitFor(() => {
-            fireEvent.change(usernameElement, { target: { value: "seeni" } });
-            fireEvent.change(passwordElement, { target: { value: "asdf" } });
-            fireEvent.click(loginButton);
+            const messageElement = screen.queryByText(/Login succeed/i);
+            expect(messageElement).toBeInTheDocument();
         });
-
-        const messageElement = screen.queryByText(/Login succeed/i);
-        expect(messageElement).toBeInTheDocument();
-
     });
 });
