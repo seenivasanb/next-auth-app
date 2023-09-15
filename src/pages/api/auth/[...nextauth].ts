@@ -46,6 +46,7 @@ const handler = NextAuth({
             }
         })
     ],
+    secret: process.env.NEXTAUTH_SECRET,
     jwt: {
         secret: process.env.NEXTAUTH_SECRET,
         maxAge: 30 * 60, // expire in 30 minutes

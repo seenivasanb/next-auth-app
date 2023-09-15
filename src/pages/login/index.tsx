@@ -25,7 +25,6 @@ const LoginPage = ({ onLogin = login }: LoginPageType) => {
 
     const onSubmit = async (e: any) => {
         e.preventDefault();
-        console.log("loginForm", loginForm);
 
         try {
             setSubmitting(true);
